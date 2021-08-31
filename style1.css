@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap');
+body {
+    background-color: #F1F3F6;
+    font-family: 'Nunito', sans-serif;
+}
+
+table {
+    background-color: #2874F0;
+}
+
+table tr td {
+    color: white;
+}
+
+.navbar {
+    overflow: hidden;
+    background-color: rgb(230, 229, 229);
+}
+
+.navbar a {
+    float: left;
+    font-size: 16px;
+    color: rgb(8, 8, 8);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.navbar a:hover,
+.dropdown:hover .dropbtn {
+    background-color: rgb(206, 201, 201);
+}
+
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+.dropdown .dropbtn {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: rgb(10, 10, 10);
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 1rem;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.search-bar {
+    padding: 6px 100px;
+    margin-top: 8px;
+    font-size: 17px;
+    border: none;
+}
+
+.search-button {
+    cursor: pointer;
+}
