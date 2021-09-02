@@ -1,3 +1,49 @@
+<?php
+
+session_start();
+require_once("dbcontroller.php");
+$status="";
+
+
+if ((isset($_POST['pid']) && $_POST['pid']!="")&& (isset($_POST['quantity']) && $_POST['quantity']!="")){
+
+$id = $_POST['pid'];
+$qty=$_POST['quantity'];
+$result = mysqli_query($con,"SELECT pId,pName,pPrice,pImage FROM `exotic` WHERE `pId`='$id'");
+$row = mysqli_fetch_assoc($result);
+$name = $row['pName'];
+$id = $row['pId'];
+$price = $row['pPrice'];
+$image = $row['pImage'];
+
+$cartArray = array(
+	$id=>array(
+	'name'=>$name,
+	'id'=>$id,
+	'price'=>$price,
+	'quantity'=>$qty,
+	'image'=>$image)
+);
+
+if(empty($_SESSION["shopping_cart"])) {
+	$_SESSION["shopping_cart"] = $cartArray;
+	$status = "<div class='box'>Product is added to your cart!</div>";
+
+}else{
+	$array_keys = array_keys($_SESSION["shopping_cart"]);
+	if(in_array($id,$array_keys)) {
+		$status = "<div class='box' style='color:red;'>
+		Product is already added to your cart!</div>";	
+	} else {
+	$_SESSION["shopping_cart"] = array_merge($_SESSION["shopping_cart"],$cartArray);
+	$status = "<div class='box'>Product is added to your cart!</div>";
+	}
+
+	}
+    
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,103 +66,34 @@
         <img src="images/exotic-fruits-vegetables.jpg" alt="">
     </div>
 
-    <h2 class="sub-heading">All Products</h2>
+    <h2 class="sub-heading">All Exotic Products</h2>
 
     <section class="products" id="products">
 
         <div class="box-container">
 
-            <div class="box">
-                <img src="images/zucchini.png" alt="">
-                <h3>Green Zucchini 1 kg</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>65</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/zucchini-yellow.jpg" alt="">
-                <h3>Yellow Zucchini 1 kg</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>70</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/capsicum-red.png" alt="">
-                <h3>Red Capsicum 500 g</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>35</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/capsicum-yellow.png" alt="">
-                <h3>Yellow Capsicum 500 g</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>40</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/mushroom.png" alt="">
-                <h3>Button Mushroom 200g</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>42</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/lemongrass.png" alt="">
-                <h3>Lemongrass 1 bunch(40g-100g)</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>15</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/alfalfa-sprouts.png" alt="">
-                <h3>Alfalfa Sprouts 100g</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>45</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/avacado.png" alt="">
-                <h3>Avacado 1pc (300g-600g)</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>200</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/lettuce-leafy.png" alt="">
-                <h3>Lettuce leafy 250g </h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>45</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/american-kale.png" alt="">
-                <h3>American Kale (150g-200g)</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>95</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/baby-spinach.png" alt="">
-                <h3>Baby Spinach(80g-200g)</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>75</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/thyme.png" alt="">
-                <h3>Thyme 25g</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>45</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/rosemary.png" alt="">
-                <h3>Rosemary (25g-40g)</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>30</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
+           <?php
+                
+                $result = mysqli_query($con,"SELECT * FROM `exotic`");
+                while($row = mysqli_fetch_assoc($result)){
+                echo "  <div class='box'>
+                <div class='product_wrapper'>
+                  <form method='post' action=''>
+                  <input type='hidden' name='pid' value=".$row['pId']." />
+                  <div class='image'><img src='".$row['pImage']."' /></div>
+                  <div class='name'><h3>".$row['pName']."</h3></div>
+                     <div class='price'><p>MRP:".'<i class="fas fa-rupee-sign"></i>'."<span>".$row['pPrice']."</span></div>
+                  <div class='cart-action'>
+                  <input type='number' class='product-quantity' name='quantity' value='1' style=' width:50px'  />
+                  <button type='submit' class='btn '>Add to Cart".' <i class="fas fa-cart-plus" ></i>'."</button>
+                  </div>
+                  </form>
+                     </div>  </div>";
+              
+            }
+            mysqli_close($con); 
+           
+           ?>
             
 
 

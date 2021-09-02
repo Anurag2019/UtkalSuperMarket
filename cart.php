@@ -98,7 +98,15 @@ $total_price += ($product["price"]*$product["quantity"]);
 <div class="message_box" style="margin:10px 0px;">
 <?php echo $status; ?>
 </div>
-<a href="index.php" >Continue Shopping</a>
+<table>
+	<tr>
+		<td><a href="index.php" >Continue Shopping</a></td>
+		<td>
+		<?php $page= isset($_SESSION['username']) ? 'checkout.php' : 'login.php'; ?>
+			<a href="<?php echo $page ; ?>">Checkout</a></td>
+	</tr>
+</table>
+
 
 
 

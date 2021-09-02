@@ -1,3 +1,49 @@
+<?php
+
+session_start();
+require_once("dbcontroller.php");
+$status="";
+
+
+if ((isset($_POST['pid']) && $_POST['pid']!="")&& (isset($_POST['quantity']) && $_POST['quantity']!="")){
+
+$id = $_POST['pid'];
+$qty=$_POST['quantity'];
+$result = mysqli_query($con,"SELECT pId,pName,pPrice,pImage FROM `herbs` WHERE `pId`='$id'");
+$row = mysqli_fetch_assoc($result);
+$name = $row['pName'];
+$id = $row['pId'];
+$price = $row['pPrice'];
+$image = $row['pImage'];
+
+$cartArray = array(
+	$id=>array(
+	'name'=>$name,
+	'id'=>$id,
+	'price'=>$price,
+	'quantity'=>$qty,
+	'image'=>$image)
+);
+
+if(empty($_SESSION["shopping_cart"])) {
+	$_SESSION["shopping_cart"] = $cartArray;
+	$status = "<div class='box'>Product is added to your cart!</div>";
+
+}else{
+	$array_keys = array_keys($_SESSION["shopping_cart"]);
+	if(in_array($id,$array_keys)) {
+		$status = "<div class='box' style='color:red;'>
+		Product is already added to your cart!</div>";	
+	} else {
+	$_SESSION["shopping_cart"] = array_merge($_SESSION["shopping_cart"],$cartArray);
+	$status = "<div class='box'>Product is added to your cart!</div>";
+	}
+
+	}
+    
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,41 +67,32 @@
         <img src="images/fruits-vegetables-20200619.jpg" alt="">
     </div>
 
-    <h2 class="sub-heading">All Products</h2>
+    <h2 class="sub-heading">All Herbs</h2>
 
     <section class="products" id="products">
 
         <div class="box-container">
 
-            <div class="box">
-                <img src="images/chilli-green.png" alt="">
-                <h3>Green Chilli 200g</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>17</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/garlic.png" alt="">
-                <h3>Garlic 200g</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>32</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/ginger.png" alt="">
-                <h3>Ginger 200g</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>20</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-            <div class="box">
-                <img src="images/lemon.png" alt="">
-                <h3>Lemon 100g</h3>
-                <p>MRP: <i class="fas fa-rupee-sign"></i><span>10</span></p>
-                <a href="" class="btn">Add to Cart <i class="fas fa-plus-circle"></i></a>  
-            </div>
-
-
+            <?php
+                 $result = mysqli_query($con,"SELECT * FROM `herbs`");
+                 while($row = mysqli_fetch_assoc($result)){
+                 echo "  <div class='box'>
+                 <div class='product_wrapper'>
+                   <form method='post' action=''>
+                   <input type='hidden' name='pid' value=".$row['pId']." />
+                   <div class='image'><img src='".$row['pImage']."' /></div>
+                   <div class='name'><h3>".$row['pName']."</h3></div>
+                      <div class='price'><p>MRP:".'<i class="fas fa-rupee-sign"></i>'."<span>".$row['pPrice']."</span></div>
+                   <div class='cart-action'>
+                   <input type='number' class='product-quantity' name='quantity' value='1' style=' width:50px'  />
+                   <button type='submit' class='btn '>Add to Cart".' <i class="fas fa-cart-plus" ></i>'."</button>
+                   </div>
+                   </form>
+                      </div>  </div>";
+               
+             }
+             mysqli_close($con); 
+            ?>
 
         </div>
 

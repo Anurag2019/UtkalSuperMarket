@@ -42,9 +42,12 @@ else{
     
     z-index: 1000;
   }
-  a.cartlink
+  a
   {
     color:whitesmoke
+  }
+  a.logout{
+    margin-left: 20px;
   }
 
   
@@ -56,7 +59,24 @@ else{
             <td align="right"><h1>Utkal Supermarket</h1></td>
             <td class="search-bar"><input type="text" placeholder="Search for products, brands and more" style="width: 550px;height: 25px;">
             <input type="button" value="Search"  class="search-button" style="height: 25px;"></td>
-            <th class="signin"><font color="white" size="3px">Sign In/Signup</font></th>
+           
+            <th class="signin">
+              <font color="white" size="3px">
+                <?php 
+                  if(isset($_SESSION['username'])){
+                    echo "<div>
+                    <i class='fa fa-user' aria-hidden='true'></i> ".$_SESSION['username']." <a href='logout.php' class='logout'>Logout</a>
+                      </div>";
+                  }
+                  else{
+                    echo " <div>
+                    <a href='login.php' class='loginlink'><i class='fa fa-user' aria-hidden='true'></i> Login/Signup</a>
+                  </div>";
+                  }
+                ?>
+               
+              
+            </font></th>
             <th class="cart"><font color="white" size="5px">
               <div class="cart-div">
               <span style="font-size:35px"><a href="cart.php" class="cartlink"><i class="fa fa-shopping-cart my-cart-icon" onclick="windows.location='cart.php'"></i></a></span>
