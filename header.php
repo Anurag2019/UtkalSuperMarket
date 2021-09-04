@@ -1,11 +1,30 @@
 <?php
 
-if(!empty($_SESSION["shopping_cart"])) {
-$cart_count = count(array_keys($_SESSION["shopping_cart"]));
+require_once("dbcontroller.php");
+
+if(isset($_SESSION['username'])){
+  
+  $username=$_SESSION['username'];
+  $result=mysqli_query($con,"SELECT sum(pQty) as totalproducts from cart where username='$username'");
+  $data=mysqli_fetch_assoc($result);
+  $totalproducts=$data['totalproducts'];
+  if($totalproducts==NULL){
+    $cart_count=0;
+  }
+  else{
+    $cart_count=$totalproducts;
+  }
+ 
 }
 else{
-  $cart_count=0;
+  if(!empty($_SESSION["shopping_cart"])) {
+    $cart_count = count(array_keys($_SESSION["shopping_cart"]));
+    }
+    else{
+      $cart_count=0;
+    }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -79,7 +98,7 @@ else{
             </font></th>
             <th class="cart"><font color="white" size="5px">
               <div class="cart-div">
-              <span style="font-size:35px"><a href="cart.php" class="cartlink"><i class="fa fa-shopping-cart my-cart-icon" onclick="windows.location='cart.php'"></i></a></span>
+              <span style="font-size:35px"><a href="cart.php" class="cartlink"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></span>
               <span class="badge badge-notify my-cart-badge"><?php echo $cart_count; ?></span>
               </div>
 

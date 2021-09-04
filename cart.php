@@ -2,8 +2,14 @@
 
 session_start();
 $status="";
+if(isset($_SESSION['username'])){
+	require_once("cart_db.php");
+}
+else{
+	require_once("cart_session.php");
+}
 //print_r($_SESSION['shopping_cart']);
-if (isset($_POST['action']) && $_POST['action']=="remove"){
+/*if (isset($_POST['action']) && $_POST['action']=="remove"){
 if(!empty($_SESSION["shopping_cart"])) {
 
 	foreach($_SESSION["shopping_cart"] as $key => $value) {
@@ -35,15 +41,7 @@ if(!empty($_SESSION["shopping_cart"])) {
 
 <h2>Shopping Cart</h2>   
 
-<?php
-if(!empty($_SESSION["shopping_cart"])) {
-$cart_count = count(array_keys($_SESSION["shopping_cart"]));
 
-?>
-
-<?php
-}
-?>
 
 <div class="cart">
 <?php
@@ -62,6 +60,7 @@ if(isset($_SESSION["shopping_cart"])){
 <?php
 
 foreach ($_SESSION["shopping_cart"] as $product){
+
 ?>
 <tr>
 <td><img src='<?php echo $product["image"]; ?>' width="50" height="40" /></td>
@@ -104,12 +103,15 @@ $total_price += ($product["price"]*$product["quantity"]);
 		<td>
 		<?php $page= isset($_SESSION['username']) ? 'checkout.php' : 'login.php'; ?>
 			<a href="<?php echo $page ; ?>">Checkout</a></td>
+		<td><a href="emptycart.php">Empty Cart</a></td>
 	</tr>
 </table>
 
 
 
 
+
 </div>
 </body>
-</html>
+</html>*/
+?>

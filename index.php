@@ -5,41 +5,119 @@ require_once("dbcontroller.php");
 $status="";
 
 
-if ((isset($_POST['pid']) && $_POST['pid']!="")&& (isset($_POST['quantity']) && $_POST['quantity']!="")){
+if ( (isset($_POST['pid']) && $_POST['pid']!="")&& (isset($_POST['quantity']) && $_POST['quantity']!=""))
+{
 
-$id = $_POST['pid'];
-$qty=$_POST['quantity'];
-$result = mysqli_query($con,"SELECT pId,pName,pPrice,pImage FROM `products` WHERE `pId`='$id'");
-$row = mysqli_fetch_assoc($result);
-$name = $row['pName'];
-$id = $row['pId'];
-$price = $row['pPrice'];
-$image = $row['pImage'];
+    $id = $_POST['pid'];
+    $qty=$_POST['quantity'];
+    $result = mysqli_query($con,"SELECT pId,pName,pPrice,pImage FROM `products` WHERE `pId`='$id'");
+    $row = mysqli_fetch_assoc($result);
+    $name = $row['pName'];
+    $id = $row['pId'];
+    $price = $row['pPrice'];
+    $image = $row['pImage'];
 
-$cartArray = array(
-	$id=>array(
-	'name'=>$name,
-	'id'=>$id,
-	'price'=>$price,
-	'quantity'=>$qty,
-	'image'=>$image)
-);
 
-if(empty($_SESSION["shopping_cart"])) {
-	$_SESSION["shopping_cart"] = $cartArray;
-	$status = "<div class='box'>Product is added to your cart!</div>";
+    $cartArray = array(
+        $id=>array(
+        'name'=>$name,
+        'id'=>$id,
+        'price'=>$price,
+        'quantity'=>$qty,
+        'image'=>$image)
+    );
 
-}else{
-	$array_keys = array_keys($_SESSION["shopping_cart"]);
-	if(in_array($id,$array_keys)) {
-		$status = "<div class='box' style='color:red;'>
-		Product is already added to your cart!</div>";	
-	} else {
-	$_SESSION["shopping_cart"] = array_merge($_SESSION["shopping_cart"],$cartArray);
-	$status = "<div class='box'>Product is added to your cart!</div>";
-	}
+    if(isset($_SESSION['username'])){
+        $username=$_SESSION['username'];
+        $result=mysqli_query($con,"SELECT count(*) as num from cart where username='$username'");
+        $data=mysqli_fetch_assoc($result);
+        $num_products=$data['num'];
+       
+       
+        if($num_products==0)
+        {
+            $sql="insert into cart(username,pId,pName,pPrice,pQty,pImage) 
+            values('$username','$id','$name','$price','$qty','$image')";
+            if(mysqli_query($con,$sql)){
+            $status = "<div class='box'>Product is added to your cart!</div>";
+            }
+        }
+        else{
+            $sql="select pId from cart where username='$username'";
+            $result=mysqli_query($con,$sql);
+            $pIds = array();
+			while($row = mysqli_fetch_assoc($result))
+			{
+				$pIds[] = $row['pId'];
+			}
 
-	}
+		
+            if(in_array($id,$pIds) )
+            {
+                $sql="select pQty from cart where pId='$id' and username='$username'";
+                $result=mysqli_query($con,$sql);
+                $row=mysqli_fetch_row($result);
+                $pQty=$row[0];
+                $qty=$qty+$pQty;
+                $sql="update cart set pQty='$qty' where pId='$id' and username='$username'";
+                if(mysqli_query($con,$sql)){
+                    $status = "<div class='box' style='color:red;'>
+                    Product is updated to your cart!</div>";
+                }
+            }
+            else{
+                $sql="insert into cart(username,pId,pName,pPrice,pQty,pImage) 
+                values('$username','$id','$name','$price','$qty','$image')";
+                if(mysqli_query($con,$sql)){
+                $status = "<div class='box'>Product is added to your cart!</div>";
+                }       
+               }
+            
+        }
+      
+      
+      
+    }
+    else{
+
+        if(empty($_SESSION["shopping_cart"])) {
+            $_SESSION["shopping_cart"] = $cartArray;
+            $status = "<div class='box'>Product is added to your cart!</div>";
+        
+        }else{
+            
+            $array_keys = array_keys($_SESSION["shopping_cart"]);
+           // print_r($array_keys);
+          
+           /* $pid_array=array();
+            foreach($_SESSION["shopping_cart"] as $product)
+            {
+                foreach($product as $key=>$value)
+                {
+                    if($key=='id')
+                    {
+                        $pid_array[]=$value;
+                    }
+                }
+            }*/
+           
+            if(in_array($id,$array_keys)) {
+                $_SESSION["shopping_cart"][$id]['quantity']=$_SESSION["shopping_cart"][$id]['quantity']+$qty;
+                $status = "<div class='box' style='color:red;'>
+                Product is updated to your cart!</div>";
+                print_r($_SESSION["shopping_cart"]);	
+                echo "<br>";
+            } else {
+            $_SESSION["shopping_cart"] = array_merge($_SESSION["shopping_cart"],$cartArray);
+            print_r($_SESSION["shopping_cart"]);
+            $status = "<div class='box'>Product is added to your cart!</div>";
+            }
+        
+        }
+    }
+
+   
+    
     
 }
 
@@ -89,7 +167,7 @@ if(empty($_SESSION["shopping_cart"])) {
               <button type='submit' class='btn '>Add to Cart".' <i class="fas fa-cart-plus" ></i>'."</button>
               </div>
 			  </form>
-		   	  </div>  </div>";
+		   	  </div></div>";
           
         }
         mysqli_close($con);
